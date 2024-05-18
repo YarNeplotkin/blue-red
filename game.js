@@ -44,7 +44,7 @@ function earth(X, Y){  //поверхность
     const square1 = document.createElementNS("http://www.w3.org/2000/svg", "rect"); 
     square1.setAttribute("x", X)
     square1.setAttribute("y", Y+7)
-    square1.setAttribute("height", 13)
+    square1.setAttribute("height", 23)
     square1.setAttribute("width", 40)
     square1.setAttribute("fill", "brown")
     svg.appendChild(square1)
@@ -95,6 +95,7 @@ function platform(X,Y,color){
     svg.appendChild(line)
 }
 
+
 //лифт
 function lift(X,Y,color){
     const rect1 = document.createElementNS("http://www.w3.org/2000/svg", "rect"); 
@@ -118,15 +119,15 @@ function lift(X,Y,color){
 
 
 //жидкость: вода, огонь, кислота
-function lakeleft(color,X,Y){
+function lakeleft(X,Y,color){
     const triangle = `
-    <polygon fill="${color}" points="${X+3} ${Y+3}, ${X+40} ${Y+3}, ${X+40} ${Y+20}"/>
+    <polygon fill="${color}" points="${X+6} ${Y+3}, ${X+40} ${Y+3}, ${X+40} ${Y+20}"/>
     `
     svg.insertAdjacentHTML("beforeend", triangle)
 }
-function lakeright(color,X,Y){
+function lakeright(X,Y,color){
     const triangle = `
-    <polygon fill="${color}" points="${X} ${Y+3}, ${X+40} ${Y+3}, ${X} ${Y+20}"/>
+    <polygon fill="${color}" points="${X} ${Y+3}, ${X+34} ${Y+3}, ${X} ${Y+20}"/>
     `
     svg.insertAdjacentHTML("beforeend", triangle)
 }
@@ -175,130 +176,326 @@ export{Hero}
 //__________________________________________
 //русуем
 
-function draw(){
-    //левые верхние двери
-    door(20, 20, "red")
-    door(80, 20, "blue")
-    //доп слой верхнего этажа
-    for (let i=0; i<760; i+=40){
-        ground(i,130)
-    }
-    //верхний этаж
-    for (let i=0; i<160; i+=40){
-        earth(i,110)
-    }
-    lift(240,20,"gold")
-    slideleft(160,110)
-    lakeleft("blue",160,110)
-    for (let i=200; i<320; i+=40){
-        lakerect(i,110,"blue")
-    }
-    lakeright("blue", 320, 110)
-    slideright(320,110)
-    for (let i=360; i<520; i+=40){
-        earth(i,110)
-    }
-    platform(440,107,"gold")
-    for (let i=520; i<680; i+=20){
-        spike(i,110)
-    }
-    earth(580,80)
-    earth(680,110)
-    slideleft(720,110)
-    platform(800-120,107,"#b62ec8")
-    lift(760,130,"#b62ec8")
+const massivStructur = [
     
-    //доп слой предверхнего этажа
-    for (let i=760; i>40; i-=40){
-        ground(i,250)
-    }
-    for(let i=290; i<290+60; i+=10){
-        ground(0,i)
-    }
-    for(let i=290+20; i<290+60; i+=10){
-        ground(40,i)
-    }
-    for(let i=290+20+20; i<290+60; i+=10){
-        ground(80,i)
-    }
-    //предверхний этаж
-    for (let i=760; i>760-40*5; i-=40){
-        earth(i,230)
-    }
-    for (let i=580; i>300; i-=20){
-        spike(i,230)
-    }
-    platform(720,230-3,"#b62ec8")
-    platform(640,230-3,"red")
-    for (let i=760-12*40; i>760-40*17; i-=40){
-        earth(i,230)
-    }
-    slideright(760-40*17,230)
-    for (let i=520; i>280; i-=80){
-        lift(i,145,"red")
-    }
-    for (let i=560; i>560-80*4; i-=80){
-        lift(i,145,"blue")
-    }
-    platform(200,230-3,"blue")
-    for(let i=0; i<160; i+=40){
-        slideleft(i,270+i/2)
-    }
-    //следующий этаж подслой
-    for(let i=0; i<160; i+=40){
-        ground(i,350)
-    }
-    for(let i=0; i<160; i+=40){
-        ground(i,360)
-    }
-    for(let i=0; i<800-80; i+=40){
-        ground(i,370)
-    }
-    //след этаж
-    for (let i=160; i<160+120; i+=40){
-        earth(i,350)
-    }
-    for (let i=320; i<320+40*9; i+=80){
-        earth(i,350)
-    }
-    for (let i=280; i<320+40*9; i+=80){
-        lakerect(i,350, "#54ff00")
-    }
-    slideleft(800-120,350)
-    lift(720,370,"aqua")
-    ground(760,370)
-    platform(760,370-3,"aqua")
-    //боковые стенки
-    for (let i=370; i<600; i+=10){
-        ground(0,i)
-    }
-    for (let i=370; i<600; i+=10){
-        ground(760,i)
-    }
-    //подслой
-    for (let i=40; i<800-40; i+=40){
-        ground(i,590)
-    }
-    for (let i=40; i<800-40; i+=40){
-        ground(i,580)
-    }
+    // вход
+    {type: "door", X: 20, Y:20, color: "red"},
+    {type: "door", X: 80, Y:20, color: "blue"},
+    
+
+    // левая стенка
+    {type: "ground", X: 0, Y: 290},
+    {type: "ground", X: 0, Y: 300},
+    {type: "ground", X: 0, Y: 310},
+    {type: "ground", X: 0, Y: 320},
+    {type: "ground", X: 0, Y: 330},
+    {type: "ground", X: 0, Y: 340},
+    {type: "ground", X: 0, Y: 350},
+    {type: "ground", X: 0, Y: 360},
+    {type: "ground", X: 0, Y: 370},
+    {type: "ground", X: 0, Y: 380},
+    {type: "ground", X: 0, Y: 390},
+    {type: "ground", X: 0, Y: 400},
+    {type: "ground", X: 0, Y: 410},
+    {type: "ground", X: 0, Y: 420},
+    {type: "ground", X: 0, Y: 430},
+    {type: "ground", X: 0, Y: 440},
+    {type: "ground", X: 0, Y: 450},
+    {type: "ground", X: 0, Y: 460},
+    {type: "ground", X: 0, Y: 470},
+    {type: "ground", X: 0, Y: 480},
+    {type: "ground", X: 0, Y: 490},
+    {type: "ground", X: 0, Y: 500},
+    {type: "ground", X: 0, Y: 510},
+    {type: "ground", X: 0, Y: 520},
+    {type: "ground", X: 0, Y: 530},
+    {type: "ground", X: 0, Y: 540},
+    {type: "ground", X: 0, Y: 550},
+    {type: "ground", X: 0, Y: 560},
+    {type: "ground", X: 0, Y: 570},
+    {type: "ground", X: 0, Y: 580},
+    {type: "ground", X: 0, Y: 590},
+    {type: "slideleft", X: 40, Y: 290},
+
+
+    {type: "ground", X: 40, Y: 310},
+    {type: "ground", X: 40, Y: 320},
+    {type: "ground", X: 40, Y: 330},
+    {type: "ground", X: 40, Y: 340},
+    {type: "ground", X: 40, Y: 350},
+    {type: "ground", X: 40, Y: 360},
+    {type: "slideleft", X: 80, Y: 310},
+
+    {type: "ground", X: 80, Y: 330},
+    {type: "ground", X: 80, Y: 340},
+    {type: "ground", X: 80, Y: 350},
+    {type: "ground", X: 80, Y: 360},
+    {type: "slideleft", X: 120, Y: 330},
+
+
+    {type: "ground", X: 120, Y: 350},
+    {type: "ground", X: 120, Y: 360},
+
+
+    // правая стенка
+    {type: "ground", X: 760, Y: 370},
+    {type: "ground", X: 760, Y: 380},
+    {type: "ground", X: 760, Y: 390},
+    {type: "ground", X: 760, Y: 400},
+    {type: "ground", X: 760, Y: 410},
+    {type: "ground", X: 760, Y: 420},
+    {type: "ground", X: 760, Y: 430},
+    {type: "ground", X: 760, Y: 440},
+    {type: "ground", X: 760, Y: 450},
+    {type: "ground", X: 760, Y: 460},
+    {type: "ground", X: 760, Y: 470},
+    {type: "ground", X: 760, Y: 480},
+    {type: "ground", X: 760, Y: 490},
+    {type: "ground", X: 760, Y: 500},
+    {type: "ground", X: 760, Y: 510},
+    {type: "ground", X: 760, Y: 520},
+    {type: "ground", X: 760, Y: 530},
+    {type: "ground", X: 760, Y: 540},
+    {type: "ground", X: 760, Y: 550},
+    {type: "ground", X: 760, Y: 560},
+    {type: "ground", X: 760, Y: 570},
+    {type: "ground", X: 760, Y: 580},
+    {type: "ground", X: 760, Y: 590},
+
+
     //первый этаж
-    for (let i=40; i<800-40; i+=40){
-        earth(i,560)
-    }
-    platform(640,560,"aqua")
+    {type: "earth", X: 580, Y: 80},
+    {type: "earth", X: 0, Y: 110},
+    {type: "earth", X: 40, Y: 110},
+    {type: "earth", X: 80, Y: 110},
+    {type: "earth", X: 120, Y: 110},
+    {type: "earth", X: 360, Y: 110},
+    {type: "earth", X: 400, Y: 110},
+    {type: "earth", X: 440, Y: 110},
+    {type: "earth", X: 480, Y: 110},
+    {type: "earth", X: 680, Y: 110},
+
+    {type: "ground", X: 160, Y: 130},
+    {type: "ground", X: 200, Y: 130},
+    {type: "ground", X: 240, Y: 130},
+    {type: "ground", X: 280, Y: 130},
+    {type: "ground", X: 320, Y: 130},
+    {type: "ground", X: 520, Y: 130},
+    {type: "ground", X: 560, Y: 130},
+    {type: "ground", X: 600, Y: 130},
+    {type: "ground", X: 640, Y: 130},
+    {type: "ground", X: 720, Y: 130},
+
+    {type: "slideleft", X: 160, Y: 110},
+    {type: "slideright", X: 320, Y: 110},
+    {type: "slideleft", X: 720, Y: 110},
+
+
+    //второй этаж
+    {type: "earth", X: 760, Y: 230},
+    {type: "earth", X: 720, Y: 230},
+    {type: "earth", X: 680, Y: 230},
+    {type: "earth", X: 640, Y: 230},
+    {type: "earth", X: 600, Y: 230},
+    {type: "earth", X: 280, Y: 230},
+    {type: "earth", X: 240, Y: 230},
+    {type: "earth", X: 200, Y: 230},
+    {type: "earth", X: 160, Y: 230},
+    {type: "earth", X: 120, Y: 230},
+
+    {type: "ground", X: 560, Y: 250},
+    {type: "ground", X: 520, Y: 250},
+    {type: "ground", X: 480, Y: 250},
+    {type: "ground", X: 440, Y: 250},
+    {type: "ground", X: 400, Y: 250},
+    {type: "ground", X: 360, Y: 250},
+    {type: "ground", X: 320, Y: 250},
+    {type: "ground", X: 80, Y: 250},
+
+    {type: "slideright", X: 80, Y: 230},
+
+
+    // третий этаж
+    {type: "earth", X: 160, Y: 350},
+    {type: "earth", X: 200, Y: 350},
+    {type: "earth", X: 240, Y: 350},
+    {type: "earth", X: 320, Y: 350},
+    {type: "earth", X: 400, Y: 350},
+    {type: "earth", X: 480, Y: 350},
+    {type: "earth", X: 560, Y: 350},
+    {type: "earth", X: 640, Y: 350},
+
+    {type: "ground", X: 40, Y: 370},
+    {type: "ground", X: 80, Y: 370},
+    {type: "ground", X: 120, Y: 370},
+    {type: "ground", X: 280, Y: 370},
+    {type: "ground", X: 360, Y: 370},
+    {type: "ground", X: 440, Y: 370},
+    {type: "ground", X: 520, Y: 370},
+    {type: "ground", X: 600, Y: 370},
+    {type: "ground", X: 680, Y: 370},
+    {type: "ground", X: 760, Y: 370},
+
+    {type: "slideleft", X: 680, Y: 350},
+
+
+    //четвёртый этаж
+    {type: "earth", X: 40, Y: 460},
+    {type: "earth", X: 80, Y: 460},
+    {type: "earth", X: 120, Y: 460},
+    {type: "earth", X: 160, Y: 460},
+    {type: "earth", X: 200, Y: 460},
+    {type: "earth", X: 240, Y: 460},
+    {type: "earth", X: 280, Y: 460},
+    {type: "earth", X: 320, Y: 460},
+    {type: "earth", X: 360, Y: 460},
+
+    {type: "earth", X: 720, Y: 570},
+    {type: "earth", X: 680, Y: 570},
+    {type: "earth", X: 640, Y: 570},
+    {type: "earth", X: 600, Y: 570},
+    {type: "earth", X: 560, Y: 570},
+    {type: "earth", X: 520, Y: 570},
+    {type: "earth", X: 480, Y: 570},
+    {type: "earth", X: 440, Y: 570},
+    {type: "earth", X: 400, Y: 570},
+    {type: "earth", X: 360, Y: 570},
+    {type: "earth", X: 320, Y: 570},
+    {type: "earth", X: 280, Y: 570},
+    {type: "earth", X: 240, Y: 570},
+    {type: "earth", X: 200, Y: 570},
+    {type: "earth", X: 160, Y: 570},
+    {type: "earth", X: 120, Y: 570},
+    {type: "earth", X: 80, Y: 570},
+    {type: "earth", X: 40, Y: 570},
+
+    {type: "earth", X: 400, Y: 490},    
+
+
+    //ловушки
+    {type: "lakeleft", X: 160, Y: 110, color:"blue"},//1
+    {type: "lakerect", X: 200, Y: 110, color:"blue"},
+    {type: "lakerect", X: 240, Y: 110, color:"blue"},
+    {type: "lakerect", X: 280, Y: 110, color:"blue"},
+    {type: "lakeright", X: 320, Y: 110, color:"blue"},
+
+    {type: "spike", X: 520, Y: 110},
+    {type: "spike", X: 540, Y: 110},
+    {type: "spike", X: 560, Y: 110},
+    {type: "spike", X: 580, Y: 110},
+    {type: "spike", X: 600, Y: 110},
+    {type: "spike", X: 620, Y: 110},
+    {type: "spike", X: 640, Y: 110},
+    {type: "spike", X: 660, Y: 110},
+
+    {type: "spike", X: 580, Y: 230},//2
+    {type: "spike", X: 560, Y: 230},
+    {type: "spike", X: 540, Y: 230},
+    {type: "spike", X: 520, Y: 230},
+    {type: "spike", X: 500, Y: 230},
+    {type: "spike", X: 480, Y: 230},
+    {type: "spike", X: 460, Y: 230},
+    {type: "spike", X: 440, Y: 230},
+    {type: "spike", X: 420, Y: 230},
+    {type: "spike", X: 400, Y: 230},
+    {type: "spike", X: 380, Y: 230},
+    {type: "spike", X: 360, Y: 230},
+    {type: "spike", X: 340, Y: 230},
+    {type: "spike", X: 320, Y: 230},
+
+    {type: "lakerect", X: 280, Y: 350, color:"#54ff00"},//3
+    {type: "lakerect", X: 360, Y: 350, color:"#54ff00"},
+    {type: "lakerect", X: 440, Y: 350, color:"#54ff00"},
+    {type: "lakerect", X: 520, Y: 350, color:"#54ff00"},
+    {type: "lakerect", X: 600, Y: 350, color:"#54ff00"},
+
+
+    //механизмы
+    {type: "platform", X: 680, Y: 107, color:"#b62ec8"},//1
+    {type: "lift", X: 760, Y: 130, color:"#b62ec8"},
+    {type: "platform", X: 440, Y: 107, color:"gold"},
+    {type: "lift", X: 240, Y: 20, color:"gold"},
+
+    {type: "platform", X: 720, Y: 227, color:"#b62ec8"},//2
+    {type: "platform", X: 640, Y: 227, color:"red"},
+    {type: "platform", X: 240, Y: 227, color:"blue"},
+    {type: "lift", X: 560, Y: 145, color:"red"},
+    {type: "lift", X: 520, Y: 145, color:"blue"},
+    {type: "lift", X: 480, Y: 145, color:"red"},
+    {type: "lift", X: 440, Y: 145, color:"blue"},
+    {type: "lift", X: 400, Y: 145, color:"red"},
+    {type: "lift", X: 360, Y: 145, color:"blue"},
+    {type: "lift", X: 320, Y: 145, color:"red"},
+
+    {type: "platform", X: 760, Y: 367, color:"aqua"},//3
+    {type: "lift", X: 720, Y: 370, color:"aqua"},
+
+    {type: "platform", X: 640, Y: 567, color:"aqua"},//4
+    {type: "question", X: 280, Y: 520},
+
+
+    //выход
+    {type: "door", X: 80, Y:400, color: "red"},
+    {type: "door", X: 80, Y:510, color: "blue"},
+
+]
+
+export{massivStructur}
+
+
+function draw(){
     
-    for (let i=40; i<800-40*9; i+=40){
-        earth(i,460)
-    }
-    earth(800-40*8, 460+30)
-    earth(800-40*7, 460+50)
+    massivStructur.forEach(element => {
     
-    question(280,600-80)
+        //земля
+        if(element.type==="earth"){
+            earth(element.X, element.Y)
+        }
+        if(element.type==="ground"){
+            ground(element.X, element.Y)
+        }
+        if(element.type==="slideleft"){
+            slideleft(element.X, element.Y)
+        }
+        if(element.type==="slideright"){
+            slideright(element.X, element.Y)
+        }
     
+        //озеро
+        if(element.type==="lakerect"){
+            lakerect(element.X, element.Y, element.color)
+        }
+        if(element.type==="lakeleft"){
+            lakeleft(element.X, element.Y, element.color)
+        }
+        if(element.type==="lakeright"){
+            lakeright(element.X, element.Y, element.color)
+        }
     
-    door(80,500,"blue")
-    door(80,500-100,"red")
+        // двери
+        if(element.type==="door"){
+            door(element.X, element.Y, element.color)
+        }
+    
+        // платформа, лифт
+        if(element.type==="platform"){
+            platform(element.X, element.Y, element.color)
+        }
+        if(element.type==="lift"){
+            lift(element.X, element.Y, element.color)
+        }
+    
+        // шипы
+        if(element.type==="spike"){
+            spike(element.X, element.Y)
+        }
+    
+        // вопрос
+        if(element.type==="question"){
+            question(element.X, element.Y)
+        }
+    });
+
 }
 
 export{draw}
